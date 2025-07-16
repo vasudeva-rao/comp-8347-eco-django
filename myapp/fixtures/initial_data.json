@@ -1,0 +1,52 @@
+[
+  {
+    "model": "myapp.tip",
+    "pk": 1,
+    "fields": {
+      "title": "Switch to LED Bulbs",
+      "description": "Replace incandescent bulbs with energy-efficient LED bulbs to save energy.",
+      "category": "energy",
+      "date_added": "2024-07-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "myapp.tip",
+    "pk": 2,
+    "fields": {
+      "title": "Compost Food Waste",
+      "description": "Start composting food scraps to reduce landfill waste and enrich soil.",
+      "category": "waste",
+      "date_added": "2024-07-01T11:00:00Z"
+    }
+  },
+  {
+    "model": "myapp.tip",
+    "pk": 3,
+    "fields": {
+      "title": "Fix Leaky Faucets",
+      "description": "Repair dripping faucets to conserve water and lower your utility bill.",
+      "category": "water",
+      "date_added": "2024-07-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "myapp.tip",
+    "pk": 4,
+    "fields": {
+      "title": "Eat More Plant-Based Meals",
+      "description": "Incorporate more plant-based meals into your diet to reduce your carbon footprint.",
+      "category": "food",
+      "date_added": "2024-07-01T13:00:00Z"
+    }
+  },
+  {
+    "model": "myapp.tip",
+    "pk": 5,
+    "fields": {
+      "title": "Use Public Transport",
+      "description": "Opt for public transportation or carpooling to reduce emissions.",
+      "category": "transport",
+      "date_added": "2024-07-01T14:00:00Z"
+    }
+  }
+] 

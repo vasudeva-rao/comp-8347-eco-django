@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Submit Tip{% endblock %}
+{% block content %}
+<h2>{% if form.instance.pk %}Edit Tip{% else %}Submit a New Tip{% endif %}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="mb-3">
+        {{ form.title.label_tag }}
+        {{ form.title }}
+        {{ form.title.errors }}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {{ form.description.errors }}
+    </div>
+    <div class="mb-3">
+        {{ form.category.label_tag }}
+        {{ form.category }}
+        {{ form.category.errors }}
+    </div>
+    <div class="mb-3">
+        {{ form.file.label_tag }}
+        {{ form.file }}
+        {{ form.file.errors }}
+        {% if form.instance.file %}
+            <p>Current file: <a href="{{ form.instance.file.url }}" target="_blank">View</a></p>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-success">{% if form.instance.pk %}Update{% else %}Submit{% endif %}</button>
+    {% if form.instance.pk %}
+        <a href="/tip/{{ form.instance.pk }}/" class="btn btn-secondary ms-2">Back</a>
+    {% else %}
+        <a href="/tips/" class="btn btn-secondary ms-2">Back</a>
+    {% endif %}
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var clearCheckbox = document.querySelector('input[type="checkbox"][name$="clear"]');
+    var fileInput = document.querySelector('input[type="file"]');
+    if (clearCheckbox && fileInput) {
+        clearCheckbox.addEventListener('change', function() {
+            fileInput.disabled = this.checked;
+        });
+    }
+});
+</script>
+{% endblock %} 

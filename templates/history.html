@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Visit History{% endblock %}
+{% block content %}
+<h2>Visit History</h2>
+<p><strong>Visits today:</strong> {{ visit_count_today }}</p>
+<h4>Last 5 Tips Viewed</h4>
+<ul>
+    {% for tip_id in last_5_tips %}
+        <li><a href="/tip/{{ tip_id }}/">Tip #{{ tip_id }}</a></li>
+    {% empty %}
+        <li>No tips viewed yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %} 
