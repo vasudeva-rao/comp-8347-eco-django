@@ -31,6 +31,7 @@
         {% endfor %}
     </div>
     <h4 class="mt-5">Your Redemptions</h4>
+    {% if redemptions %}
     <table class="table table-striped mt-3">
         <thead>
             <tr>
@@ -44,10 +45,13 @@
                 <td>{{ redemption.reward.name }}</td>
                 <td>{{ redemption.redeemed_on|date:"Y-m-d H:i" }}</td>
             </tr>
-            {% empty %}
-            <tr><td colspan="2">No redemptions yet.</td></tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div class="text-center text-muted py-4">
+        No redemptions yet.
+    </div>
+    {% endif %}
 </div>
 {% endblock %} 
