@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Rewards</h2>
+    <div class="alert alert-info">Your Points: <strong>{{ profile.points }}</strong></div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <div class="row">
+        {% for reward in rewards %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if reward.image %}
+                <img src="{{ reward.image.url }}" class="card-img-top" alt="{{ reward.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ reward.name }}</h5>
+                    <p class="card-text">{{ reward.description }}</p>
+                    <p class="card-text"><strong>Cost:</strong> {{ reward.cost_in_points }} points</p>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="reward_id" value="{{ reward.id }}">
+                        <button type="submit" class="btn btn-success" {% if profile.points < reward.cost_in_points %}disabled{% endif %}>Redeem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <h4 class="mt-5">Your Redemptions</h4>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Reward</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for redemption in redemptions %}
+            <tr>
+                <td>{{ redemption.reward.name }}</td>
+                <td>{{ redemption.redeemed_on|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">No redemptions yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

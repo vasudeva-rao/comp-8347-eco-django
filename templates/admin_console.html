@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Admin Console</h2>
+    {% if actions %}
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>User</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Points</th>
+                    <th>Date</th>
+                    <th>Proof</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for action in actions %}
+                <tr>
+                    <td>{{ action.user.username }}</td>
+                    <td>{{ action.title }}</td>
+                    <td>{{ action.description }}</td>
+                    <td>{{ action.category }}</td>
+                    <td>{{ action.status }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="number" name="edit_points" value="{{ action.points }}" min="0" style="width:60px;" id="main_points_{{ action.id }}">
+                        <input type="hidden" name="action_id" value="{{ action.id }}">
+                        <input type="hidden" name="original_points" value="{{ original_points_dict|get_item:action.id|default:action.points }}">
+                        </form>
+                    </td>
+                    <td>{{ action.date_logged|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        {% with proof=action.upload_set.first %}
+                            {% if proof and proof.file %}
+                                <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#imgModal{{ action.id }}" title="View Proof">
+                                    <i class="fas fa-eye fa-lg"></i>
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="imgModal{{ action.id }}" tabindex="-1" aria-labelledby="imgModalLabel{{ action.id }}" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="imgModalLabel{{ action.id }}">Proof</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body text-center">
+                                        {% if proof.file.url|lower|slice:'-4:' == '.jpg' or proof.file.url|lower|slice:'-5:' == '.jpeg' or proof.file.url|lower|slice:'-4:' == '.png' or proof.file.url|lower|slice:'-4:' == '.gif' %}
+                                            <img src="{{ proof.file.url }}" alt="Proof" class="img-fluid">
+                                        {% else %}
+                                            <a href="{{ proof.file.url }}" target="_blank">Download/View File</a>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">No proof</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {% if action.status == 'Rejected' and action.rejection_comment %}
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#commentModal{{ action.id }}" style="vertical-align: middle; display: inline-block;">
+                                <i class="fas fa-info-circle text-danger"></i>
+                            </a>
+                            <!-- Modal for rejection comment -->
+                            <div class="modal fade" id="commentModal{{ action.id }}" tabindex="-1" aria-labelledby="commentModalLabel{{ action.id }}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="commentModalLabel{{ action.id }}">Rejection Reason</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <span class="text-danger">{{ action.rejection_comment }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        {% endif %}
+                        {% if action.status != 'Approved' %}
+                        <form method="post" style="display:inline;" onsubmit="return syncApprovePoints({{ action.id }})">
+                        {% csrf_token %}
+                        <input type="hidden" name="action_id" value="{{ action.id }}">
+                        <input type="hidden" name="edit_points" id="approve_points_{{ action.id }}" value="{{ action.points }}">
+                        <input type="hidden" name="original_points" value="{{ original_points_dict|get_item:action.id|default:action.points }}">
+                        <button type="submit" name="new_status" value="Approved" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        {% endif %}
+                        {% if action.status != 'Rejected' %}
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ action.id }}" onclick="syncPoints({{ action.id }})">Reject</button>
+                        <!-- Modal for rejection comment -->
+                        <div class="modal fade" id="rejectModal{{ action.id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ action.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="rejectModalLabel{{ action.id }}">Rejection Reason</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action_id" value="{{ action.id }}">
+                                <input type="hidden" name="edit_points" value="{{ action.points }}" id="modal_points_{{ action.id }}">
+                                <input type="hidden" name="original_points" value="{{ original_points_dict|get_item:action.id|default:action.points }}">
+                                <input type="hidden" name="new_status" value="Rejected">
+                                <div class="modal-body">
+                                  <!-- {% if error and error_action_id == action.id %}<div class="alert alert-danger">{{ error }}</div>{% endif %} -->
+                                  <textarea name="rejection_comment" class="form-control" placeholder="Reason for rejection" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                  <button type="submit" class="btn btn-danger">Reject</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                        <!-- Delete button and modal -->
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ action.id }}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <div class="modal fade" id="deleteModal{{ action.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ action.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{ action.id }}">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_action_id" value="{{ action.id }}">
+                                <div class="modal-body">
+                                  Are you sure you want to delete this entry?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                  <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-inbox fa-3x mb-3"></i><br>
+        <h4>No data found</h4>
+    </div>
+    {% endif %}
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+</div>
+<!-- Bootstrap JS for modal -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function syncPoints(actionId) {
+    const mainPoints = document.getElementById('main_points_' + actionId).value;
+    document.getElementById('modal_points_' + actionId).value = mainPoints;
+}
+
+function syncApprovePoints(actionId) {
+    const mainPoints = document.getElementById('main_points_' + actionId).value;
+    document.getElementById('approve_points_' + actionId).value = mainPoints;
+    return true; // Allow form submission
+}
+</script>
+{% if error and error_action_id %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = new bootstrap.Modal(document.getElementById('rejectModal{{ error_action_id }}'));
+    modal.show();
+  });
+</script>
+{% endif %}
+{% endblock %} 

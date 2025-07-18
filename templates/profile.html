@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ request.user.username|title }}'s Profile</h2>
+    <div class="card my-4">
+        <div class="card-body">
+            <h4 class="card-title">Points: <span class="text-success">{{ profile.points }}</span></h4>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">User History</h5>
+            <p><strong>Visits this session:</strong> {{ visits }}</p>
+            <p><strong>Last visit:</strong> {{ last_visit|default:'First visit!' }}</p>
+        </div>
+    </div>
+    <h4>Approved Eco-Actions</h4>
+    {% if approved_actions %}
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Points</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for action in approved_actions %}
+            <tr>
+                <td>{{ action.title }}</td>
+                <td>{{ action.category }}</td>
+                <td>{{ action.points }}</td>
+                <td>{{ action.date_logged|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="text-center text-muted py-4">
+        No approved actions yet.
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

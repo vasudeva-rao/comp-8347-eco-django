@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Login</h2>
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> Invalid username or password. Please try again.
+    </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_username">Username:</label>
+        <input type="text" name="username" id="id_username"><br>
+        <label for="id_password">Password:</label>
+        <input type="password" name="password" id="id_password"><br>
+        <button type="submit" class="btn btn-primary btn-block mt-3">Login</button>
+    </form>
+    <div class="mt-2">
+        <a href="/accounts/password_reset/">Forgot password?</a>
+    </div>
+    <div class="mt-2">
+        <a href="/">Back to Home</a>
+    </div>
+</div>
+{% endblock %} 

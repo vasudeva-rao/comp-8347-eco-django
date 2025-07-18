@@ -1,0 +1,46 @@
+[
+  {
+    "model": "myapp.ecocategory",
+    "pk": 1,
+    "fields": {
+      "name": "Recycling",
+      "description": "Actions related to recycling materials."
+    }
+  },
+  {
+    "model": "myapp.ecocategory",
+    "pk": 2,
+    "fields": {
+      "name": "Energy Saving",
+      "description": "Actions that save energy."
+    }
+  },
+  {
+    "model": "myapp.ecocategory",
+    "pk": 3,
+    "fields": {
+      "name": "Water Conservation",
+      "description": "Actions that conserve water."
+    }
+  },
+  {
+    "model": "myapp.reward",
+    "pk": 1,
+    "fields": {
+      "name": "Eco E-book",
+      "description": "Downloadable guide to sustainable living.",
+      "cost_in_points": 30,
+      "image": ""
+    }
+  },
+  {
+    "model": "myapp.reward",
+    "pk": 2,
+    "fields": {
+      "name": "Reusable Bottle Coupon",
+      "description": "Get a discount on a reusable water bottle.",
+      "cost_in_points": 50,
+      "image": ""
+    }
+  }
+] 

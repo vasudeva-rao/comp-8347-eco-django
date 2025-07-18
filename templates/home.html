@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1>EcoChallenge</h1>
+    <p class="lead">Track, Earn, and Redeem for a Greener Planet</p>
+    <form method="get" action="/leaderboard/" class="row justify-content-center g-2 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Search eco-actions or users...">
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </form>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4>How It Works</h4>
+                    <ol class="text-start">
+                        <li><strong>Log Eco-Actions:</strong> Submit your green activities and upload proof.</li>
+                        <li><strong>Admin Approval:</strong> Get your actions approved and earn points.</li>
+                        <li><strong>Redeem Rewards:</strong> Use your points to claim eco-friendly rewards.</li>
+                    </ol>
+                </div>
+            </div>
+            <a href="/log-action/" class="btn btn-success mx-2">Log Action</a>
+            <a href="/profile/" class="btn btn-primary mx-2">Profile</a>
+            <a href="/rewards/" class="btn btn-warning mx-2">Rewards</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
