@@ -1,13 +1,144 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Log Eco-Action</h2>
-    <form method="post" enctype="multipart/form-data" class="mt-4">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <div class="mb-3">
+                <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="fas fa-leaf text-white fa-2x"></i>
+                </div>
+            </div>
+            <h2 class="fw-bold mb-2">Log Your Eco-Action</h2>
+            <p class="text-muted">Share your sustainable activities and earn points</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Action Title -->
+                    <div class="mb-4">
+                        <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">
+                            <i class="fas fa-tag text-primary me-2"></i>Action Title
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="{{ form.title.id_for_label }}"
+                               name="{{ form.title.name }}"
+                               value="{{ form.title.value|default:'' }}"
+                               placeholder="e.g., Planted trees in community garden"
+                               required>
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+                            <i class="fas fa-align-left text-primary me-2"></i>Description
+                        </label>
+                        <textarea class="form-control" 
+                                  id="{{ form.description.id_for_label }}"
+                                  name="{{ form.description.name }}"
+                                  rows="4"
+                                  placeholder="Describe your eco-friendly action in detail...">{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category and Points Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-folder text-primary me-2"></i>Category
+                            </label>
+                            <select class="form-select form-select-lg" 
+                                    id="{{ form.category.id_for_label }}"
+                                    name="{{ form.category.name }}"
+                                    required>
+                                <option value="">Select a category</option>
+                                {% for value, text in form.category.field.choices %}
+                                    {% if value %}
+                                        <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ text }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.points.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-star text-warning me-2"></i>Points
+                            </label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="{{ form.points.id_for_label }}"
+                                   name="{{ form.points.name }}"
+                                   value="{{ form.points.value|default:'' }}"
+                                   min="1"
+                                   placeholder="10"
+                                   required>
+                            {% if form.points.errors %}
+                                <div class="text-danger small mt-1">{{ form.points.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Proof Upload -->
+                    <div class="mb-4">
+                        <label for="{{ form.proof.id_for_label }}" class="form-label fw-semibold">
+                            <i class="fas fa-camera text-primary me-2"></i>Proof (Optional)
+                        </label>
+                        <div class="border border-2 border-dashed border-success rounded-3 p-4 text-center">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-success mb-2"></i>
+                            <div class="mb-2">
+                                <input type="file" 
+                                       class="form-control" 
+                                       id="{{ form.proof.id_for_label }}"
+                                       name="{{ form.proof.name }}"
+                                       accept="image/*,.pdf,.doc,.docx">
+                            </div>
+                            <small class="text-muted">Upload photos or documents as proof of your eco-action</small>
+                        </div>
+                        {% if form.proof.errors %}
+                            <div class="text-danger small mt-1">{{ form.proof.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Submit Eco-Action
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="card mt-4 border-info">
+            <div class="card-body">
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-info-circle text-info me-3 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-2">How it works</h6>
+                        <ul class="mb-0 small text-muted">
+                            <li>Submit your eco-friendly actions with details and proof</li>
+                            <li>Admin will review and approve your submission</li>
+                            <li>Earn points once approved and climb the leaderboard</li>
+                            <li>Use points to redeem rewards from our marketplace</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-{% endblock %} 
+{% endblock %}

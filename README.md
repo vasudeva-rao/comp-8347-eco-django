@@ -4,7 +4,7 @@
 
 1. **Clone the repository:**
    ```sh
-   git clone <your-repo-url>
+   git clone https://github.com/vasudeva-rao/comp-8347-eco-django
    cd EcoChallenge
    ```
 
@@ -56,37 +56,5 @@
 - For any issues, ensure your virtual environment is activated and dependencies are installed.
 
 ---
-
-## Troubleshooting
-
-### Pillow/ImageField Error
-If you see an error like:
-```
-myapp.Reward.image: (fields.E210) Cannot use ImageField because Pillow is not installed.
-```
-This means Pillow is not installed **inside your virtual environment**.
-
-**Solution:**
-1. Activate your virtual environment:
-   - On Windows (PowerShell):
-     ```powershell
-     .venv\Scripts\Activate
-     ```
-   - On Windows (cmd):
-     ```cmd
-     .venv\Scripts\activate.bat
-     ```
-   - On Unix/Mac:
-     ```sh
-     source .venv/bin/activate
-     ```
-2. Install Pillow:
-   ```sh
-   pip install Pillow
-   ```
-3. Run your server again:
-   ```sh
-   python manage.py runserver
-   ```
 
 **Note:** Installing Pillow globally (outside the virtual environment) will not fix this error. Always activate your virtual environment before installing dependencies or running the server. 

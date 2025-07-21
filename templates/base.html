@@ -6,81 +6,377 @@
     <title>EcoChallenge</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      html, body { height: 100%; }
-      body { min-height: 100vh; display: flex; flex-direction: column; }
-      main { flex: 1 0 auto; }
-      .footer { flex-shrink: 0; }
+        :root {
+            --primary-color: #16a085;
+            --secondary-color: #27ae60;
+            --accent-color: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8fffe;
+            --border-light: #e8f5f3;
+            --shadow: 0 2px 20px rgba(22, 160, 133, 0.1);
+            --shadow-hover: 0 4px 30px rgba(22, 160, 133, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5f3 100%);
+            color: var(--text-dark);
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        main {
+            flex: 1 0 auto;
+        }
+        
+        .footer {
+            flex-shrink: 0;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            border: none;
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark) !important;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: var(--border-light);
+            color: var(--primary-color) !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background: transparent;
+            border: none;
+            padding: 1.5rem 1.5rem 0;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #138d75 0%, #229954 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        /* Forms */
+        .form-control, .form-select {
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(22, 160, 133, 0.25);
+        }
+        
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #e8f8f5 0%, #d5f4e6 100%);
+            color: var(--primary-color);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d5f4e6 0%, #abebc6 100%);
+            color: var(--secondary-color);
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #fadbd8 0%, #f5b7b1 100%);
+            color: #c0392b;
+        }
+        
+        /* Tables */
+        .table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .table thead th {
+            background: var(--bg-light);
+            border: none;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 1rem;
+        }
+        
+        .table tbody td {
+            border: none;
+            padding: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        /* List groups */
+        .list-group-item {
+            border: none;
+            border-radius: 12px !important;
+            margin-bottom: 0.5rem;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .list-group-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        /* Badges */
+        .badge {
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        
+        .bg-success {
+            background: var(--secondary-color) !important;
+        }
+        
+        /* Container improvements */
+        .container {
+            max-width: 1200px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-light) !important;
+        }
+        
+        .footer a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+                padding-top: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">EcoChallenge</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-leaf me-2"></i>EcoChallenge
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="/log-action/">Log Action</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/profile/">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/rewards/">Rewards</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/leaderboard/">Leaderboard</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/log-action/">
+                                <i class="fas fa-plus-circle me-1"></i>Log Action
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile/">
+                                <i class="fas fa-user me-1"></i>Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rewards/">
+                                <i class="fas fa-gift me-1"></i>Rewards
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/leaderboard/">
+                                <i class="fas fa-trophy me-1"></i>Leaderboard
+                            </a>
+                        </li>
                         {% if user.is_staff %}
-                        <li class="nav-item"><a class="nav-link" href="/admin-console/">Admin Console</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin-console/">
+                                <i class="fas fa-cogs me-1"></i>Admin
+                            </a>
+                        </li>
                         {% endif %}
-                        <li class="nav-item d-flex align-items-center">
+                        <li class="nav-item">
                             <form action="/accounts/logout/" method="post" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="nav-link" style="background:none; border:none; color:inherit; padding:0; margin:0; font: inherit; cursor:pointer;">Logout</button>
+                                <button type="submit" class="nav-link" style="background:none; border:none; color:inherit; padding:0.5rem 1rem; margin:0; font: inherit; cursor:pointer; border-radius: 8px;">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </button>
                             </form>
                         </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/accounts/login/">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/accounts/register/">Register</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/leaderboard/">Leaderboard</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/accounts/login/">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/accounts/register/">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/leaderboard/">
+                                <i class="fas fa-trophy me-1"></i>Leaderboard
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    
     <main class="flex-shrink-0">
-        <div class="container">
+        <div class="container py-4">
             {% block content %}{% endblock %}
         </div>
     </main>
-    <footer class="footer mt-auto py-4 bg-light border-top">
+    
+    <footer class="footer mt-auto py-4">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
-                    <span class="fw-bold h5">EcoChallenge</span> <span class="text-muted">Sustainability for All.</span>
-                    <div class="mt-2">
-                        <a href="#" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-x-twitter fa-lg"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#"><i class="fab fa-pinterest fa-lg"></i></a>
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                        <i class="fas fa-leaf text-success me-2 fa-lg"></i>
+                        <span class="fw-bold h5 mb-0">EcoChallenge</span>
                     </div>
+                    <p class="text-muted mb-2">Sustainability for All.</p>
                 </div>
                 <div class="col-md-5 mb-3 mb-md-0">
                     <div class="row">
                         <div class="col-6 col-md-4">
                             <ul class="list-unstyled">
-                                <li><a href="/about/" class="text-decoration-none">About Us</a></li>
-                                <li><a href="/team/" class="text-decoration-none">Team</a></li>
-                                <li><a href="/contact/" class="text-decoration-none">Contact</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <ul class="list-unstyled">
-                                <li><a href="/privacy/" class="text-decoration-none">Privacy Policy</a></li>
-                                <li><a href="/terms/" class="text-decoration-none">Terms of Service</a></li>
+                                <li class="mb-2"><a href="/about/" class="text-decoration-none">About Us</a></li>
+                                <li class="mb-2"><a href="/team/" class="text-decoration-none">Team</a></li>
+                                <li class="mb-2"><a href="/contact/" class="text-decoration-none">Contact</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 text-center text-md-end">
-                    <small class="text-muted">&copy; 2024 EcoChallenge<br>University of Windsor - Internet of Applications</small>
+                    <small class="text-muted">&copy; 2025 EcoChallenge<br>University of Windsor</small>
                 </div>
             </div>
         </div>
     </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

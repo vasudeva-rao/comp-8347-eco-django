@@ -2,7 +2,13 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Contact Us</h2>
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        Thank you! Your message has been submitted.
+    </div>
+    {% endif %}
     <form class="mt-4" method="post">
+        {% csrf_token %}
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" id="name" name="name" required>
@@ -17,9 +23,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Send</button>
     </form>
-    <div class="mt-4">
-        <p><strong>Email:</strong> info@ecochallenge.com</p>
-        <p><strong>Address:</strong> University of Windsor, Windsor, ON, Canada</p>
-    </div>
 </div>
 {% endblock %} 

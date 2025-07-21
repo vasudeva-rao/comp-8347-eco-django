@@ -1,57 +1,185 @@
+
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>Rewards</h2>
-    <div class="alert alert-info">Your Points: <strong>{{ profile.points }}</strong></div>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    <div class="row">
-        {% for reward in rewards %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if reward.image %}
-                <img src="{{ reward.image.url }}" class="card-img-top" alt="{{ reward.name }}">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ reward.name }}</h5>
-                    <p class="card-text">{{ reward.description }}</p>
-                    <p class="card-text"><strong>Cost:</strong> {{ reward.cost_in_points }} points</p>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="text-center">
+            <h2 class="fw-bold mb-2">
+                <i class="fas fa-gift text-warning me-2"></i>Rewards Marketplace
+            </h2>
+            <p class="text-muted">Redeem your eco-points for sustainable rewards</p>
+        </div>
+    </div>
+</div>
+
+<!-- User Points Display -->
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-6">
+        <div class="card bg-gradient" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
+            <div class="card-body text-center text-black">
+                <i class="fas fa-wallet fa-2x mb-3"></i>
+                <h4 class="fw-bold mb-2">Your Balance</h4>
+                <h2 class="fw-bold">{{ profile.points }} Points</h2>
+                <p class="mb-0 opacity-75">Keep earning to unlock more rewards!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Available Rewards -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h4 class="fw-bold mb-4">
+            <i class="fas fa-shopping-bag me-2 text-primary"></i>Available Rewards
+        </h4>
+    </div>
+    {% for reward in rewards %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100 reward-card">
+            {% if reward.image %}
+            <div class="position-relative overflow-hidden" style="height: 200px;">
+                <img src="{{ reward.image.url }}" class="card-img-top h-100 object-fit-cover" alt="{{ reward.name }}">
+                <div class="position-absolute top-0 end-0 m-2">
+                    <span class="badge bg-primary px-3 py-2">{{ reward.cost_in_points }} pts</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <div class="text-center">
+                    <i class="fas fa-gift fa-3x text-muted mb-2"></i>
+                    <div class="badge bg-primary">{{ reward.cost_in_points }} pts</div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-bold mb-2">{{ reward.name }}</h5>
+                <p class="card-text text-muted flex-grow-1">{{ reward.description }}</p>
+                <div class="mt-auto">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="fw-bold text-primary">
+                            <i class="fas fa-coins me-1"></i>{{ reward.cost_in_points }} Points
+                        </span>
+                        {% if profile.points >= reward.cost_in_points %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>Available
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-lock me-1"></i>Need {{ reward.cost_in_points|add:profile.points|add:"-"|add:profile.points }} more
+                            </span>
+                        {% endif %}
+                    </div>
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" name="reward_id" value="{{ reward.id }}">
-                        <button type="submit" class="btn btn-success" {% if profile.points < reward.cost_in_points %}disabled{% endif %}>Redeem</button>
+                        <button type="submit" class="btn {% if profile.points >= reward.cost_in_points %}btn-success{% else %}btn-secondary{% endif %} w-100" {% if profile.points < reward.cost_in_points %}disabled{% endif %}>
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            {% if profile.points >= reward.cost_in_points %}Redeem Now{% else %}Insufficient Points{% endif %}
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-    <h4 class="mt-5">Your Redemptions</h4>
-    {% if redemptions %}
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Reward</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for redemption in redemptions %}
-            <tr>
-                <td>{{ redemption.reward.name }}</td>
-                <td>{{ redemption.redeemed_on|date:"Y-m-d H:i" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="text-center text-muted py-4">
-        No redemptions yet.
-    </div>
-    {% endif %}
+    {% endfor %}
 </div>
-{% endblock %} 
+
+<!-- Redemption History -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">
+                    <i class="fas fa-history me-2 text-info"></i>Your Redemptions
+                </h5>
+                <span class="badge bg-info">{{ redemptions|length }} Redemption{{ redemptions|length|pluralize }}</span>
+            </div>
+            <div class="card-body">
+                {% if redemptions %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="border-0">
+                                    <i class="fas fa-gift me-1"></i>Reward
+                                </th>
+                                <th class="border-0">
+                                    <i class="fas fa-calendar me-1"></i>Redeemed On
+                                </th>
+                                <th class="border-0">
+                                    <i class="fas fa-info-circle me-1"></i>Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for redemption in redemptions %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-gift text-success"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">{{ redemption.reward.name }}</div>
+                                            <small class="text-muted">{{ redemption.reward.description|truncatechars:50 }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>{{ redemption.redeemed_on|date:"M d, Y" }}</div>
+                                    <small class="text-muted">{{ redemption.redeemed_on|date:"H:i" }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Completed
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shopping-bag fa-2x text-muted"></i>
+                    </div>
+                    <h6 class="text-muted mb-3">No redemptions yet</h6>
+                    <p class="text-muted mb-4">Start earning points and redeem your first reward!</p>
+                    <a href="/log-action/" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Log an Action
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.reward-card {
+    transition: all 0.3s ease;
+}
+
+.reward-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 40px rgba(22, 160, 133, 0.15);
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+</style>
+{% endblock %}

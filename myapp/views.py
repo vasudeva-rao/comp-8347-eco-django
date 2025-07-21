@@ -3,11 +3,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import EcoActionForm, RegisterForm
 from .models import EcoAction, Upload, Profile, Reward, Redemption, EcoCategory
 from django.contrib import messages
-from django.db.models import Sum
 from django.contrib.auth import login
 from django.contrib.admin.views.decorators import staff_member_required
-
-# Create your views here.
+from django.views.decorators.cache import never_cache
 
 @login_required
 def log_eco_action(request):
@@ -28,6 +26,7 @@ def log_eco_action(request):
 def ecoaction_success(request):
     return render(request, 'ecoaction_success.html')
 
+@never_cache
 @login_required
 def profile(request):
     profile = request.user.profile
@@ -46,6 +45,7 @@ def profile(request):
     response.set_cookie('last_visit', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     return response
 
+@never_cache
 @login_required
 def rewards(request):
     rewards = Reward.objects.all()
@@ -64,10 +64,12 @@ def rewards(request):
     redemptions = Redemption.objects.filter(user=request.user).order_by('-redeemed_on')
     return render(request, 'rewards.html', {'rewards': rewards, 'profile': profile, 'redemptions': redemptions})
 
+@never_cache
 def home(request):
     categories = EcoCategory.objects.all()
     return render(request, 'home.html', {'categories': categories})
 
+@never_cache
 @login_required
 def leaderboard(request):
     search_query = request.GET.get('q', '')
@@ -88,21 +90,18 @@ def leaderboard(request):
         'selected_category': category_id
     })
 
+@never_cache
 @staff_member_required
 def admin_console(request):
     actions = EcoAction.objects.all().select_related('user', 'category')
     show_rejection_comment = any(a.status == 'Rejected' and a.rejection_comment for a in actions)
     error = None
     error_action_id = None
-    # Build a dict of original points for each action - store current points as "original" for approved actions
-    # For non-approved actions, we need to track what their original approved value was
     original_points_dict = {}
     for action in actions:
         if action.status == 'Approved':
-            # For currently approved actions, current points are the "original approved" points
             original_points_dict[action.id] = action.points
         else:
-            # For pending/rejected actions, use last_approved_points if available
             original_points_dict[action.id] = action.last_approved_points if action.last_approved_points is not None else action.points
 
     if request.method == 'POST':
@@ -123,20 +122,15 @@ def admin_console(request):
             eco_action = EcoAction.objects.get(id=action_id)
             new_points = int(request.POST.get('edit_points') or 0)
             new_status = request.POST.get('new_status')
-            # Get original points from hidden field or fallback to current
             original_points = int(request.POST.get('original_points') or 0)
-            # Debug: print what we're processing
             print(f"Processing action {action_id}: current_status={eco_action.status}, new_status={new_status}")
             print(f"Points: new_points={new_points}, original_points={original_points}, current_points={eco_action.points}")
-            # Validation: only prevent setting higher points when rejecting (no longer have Pending button)
             if new_status == 'Rejected' and new_points > original_points:
                 error = f"Cannot set points higher than original ({original_points}) when rejecting. Point has been set to {original_points}."
                 error_action_id = action_id
                 print(f"Validation failed: {error}")
-                # Do NOT update or save the action, just fall through to render with error
             else:
                 print(f"Validation passed, updating action")
-                # Only update if validation passes
                 eco_action.points = new_points
                 eco_action.status = new_status
                 if new_status == 'Rejected':
@@ -169,10 +163,12 @@ def register(request):
 def about(request):
     return render(request, 'about.html')
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        print(f"Contact form submitted:\nName: {name}\nEmail: {email}\nMessage: {message}")
+        return render(request, 'contact.html', {'success': True})
     return render(request, 'contact.html')
 def team(request):
     return render(request, 'team.html')
-def privacy(request):
-    return render(request, 'privacy.html')
-def terms(request):
-    return render(request, 'terms.html')

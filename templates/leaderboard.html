@@ -1,55 +1,150 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Leaderboard & Eco-Action Feed</h2>
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Top Users</h4>
-                    <ol class="list-group list-group-numbered">
-                        {% for user in top_users %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ user.user.username }}
-                            <span class="badge bg-success rounded-pill">{{ user.points }}</span>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item">No users yet.</li>
-                        {% endfor %}
-                    </ol>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="text-center">
+            <h2 class="fw-bold mb-2">
+                <i class="fas fa-trophy text-warning me-2"></i>Leaderboard & Eco-Action Feed
+            </h2>
+            <p class="text-muted">See top contributors and latest eco-friendly activities</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Leaderboard Sidebar -->
+    <div class="col-lg-4 mb-4">
+        <div class="card sticky-top" style="top: 100px;">
+            <div class="card-header text-center">
+                <h5 class="fw-bold mb-0">
+                    <i class="fas fa-crown text-warning me-2"></i>Top Contributors
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if top_users %}
+                    {% for user in top_users %}
+                    <div class="d-flex align-items-center p-3 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div class="position-relative me-3">
+                            {% if forloop.counter == 1 %}
+                                <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-crown text-warning fa-lg"></i>
+                                </div>
+                            {% elif forloop.counter == 2 %}
+                                <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-medal text-secondary fa-lg"></i>
+                                </div>
+                            {% elif forloop.counter == 3 %}
+                                <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-award text-danger fa-lg"></i>
+                                </div>
+                            {% else %}
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold text-muted">{{ forloop.counter }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-1">{{ user.user.username }}</h6>
+                            <small class="text-muted">EcoChallenge Member</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success px-3 py-2">{{ user.points }}</span>
+                            <small class="text-muted d-block">points</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-users fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">No users yet. Be the first!</p>
                 </div>
+                {% endif %}
             </div>
         </div>
-        <div class="col-md-8">
-            <form method="get" class="row g-2 mb-3">
-                <div class="col-md-6">
-                    <input type="text" name="q" class="form-control" placeholder="Search actions..." value="{{ search_query }}">
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <i class="fas fa-search position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light);"></i>
+                            <input type="text" name="q" class="form-control" placeholder="Search actions..." value="{{ search_query }}" style="padding-left: 45px;">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Eco-Actions Feed -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="fw-bold mb-0">
+                    <i class="fas fa-leaf me-2 text-success"></i>Recent Eco-Actions
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if actions %}
+                    {% for action in actions %}
+                    <div class="p-4 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 50px; height: 50px;">
+                                <i class="fas fa-leaf text-success"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2">{{ action.title }}</h6>
+                                <p class="text-muted mb-3">{{ action.description }}</p>
+                                <div class="d-flex flex-wrap align-items-center gap-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user text-primary me-1"></i>
+                                        <span class="fw-medium">{{ action.user.username }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-folder text-info me-1"></i>
+                                        <span class="badge bg-light text-dark">{{ action.category }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar text-warning me-1"></i>
+                                        <small class="text-muted">{{ action.date_logged|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-coins text-success me-1"></i>
+                                        <span class="badge bg-success">+{{ action.points }} pts</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-search fa-2x text-muted"></i>
+                    </div>
+                    <h6 class="text-muted mb-3">No actions found</h6>
+                    <p class="text-muted">Try adjusting your search criteria or check back later.</p>
                 </div>
-                <div class="col-md-4">
-                    <select name="category" class="form-select">
-                        <option value="">All Categories</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                </div>
-            </form>
-            <div class="list-group">
-                {% for action in actions %}
-                <div class="list-group-item mb-2">
-                    <h5>{{ action.title }}</h5>
-                    <p class="mb-1">{{ action.description }}</p>
-                    <small>By <strong>{{ action.user.username }}</strong> in <em>{{ action.category }}</em> | {{ action.date_logged|date:"Y-m-d H:i" }} | <span class="text-success">+{{ action.points }} pts</span></small>
-                </div>
-                {% empty %}
-                <div class="list-group-item">No actions found.</div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

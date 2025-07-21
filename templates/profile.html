@@ -1,46 +1,123 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>{{ request.user.username|title }}'s Profile</h2>
-    <div class="card my-4">
-        <div class="card-body">
-            <h4 class="card-title">Points: <span class="text-success">{{ profile.points }}</span></h4>
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <!-- User Info Card -->
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                    <i class="fas fa-user fa-3x text-primary"></i>
+                </div>
+                <h4 class="fw-bold mb-2">{{ request.user.username|title }}</h4>
+                <p class="text-muted mb-3">EcoChallenge Member</p>
+                <div class="bg-gradient rounded p-3 mb-3" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
+                    <h3 class="text-white fw-bold mb-1">{{ profile.points }}</h3>
+                    <p class="text-white-50 mb-0">Total Points</p>
+                </div>
+                <div class="d-grid gap-2">
+                    <a href="/log-action/" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Log New Action
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User History Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="fw-bold mb-0">
+                    <i class="fas fa-chart-line me-2 text-info"></i>Session Stats
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Visits this session:</span>
+                    <span class="fw-bold">{{ visits }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Last visit:</span>
+                    <span class="fw-bold">{{ last_visit|default:'First visit!' }}</span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">User History</h5>
-            <p><strong>Visits this session:</strong> {{ visits }}</p>
-            <p><strong>Last visit:</strong> {{ last_visit|default:'First visit!' }}</p>
+    
+    <div class="col-lg-8">
+        <!-- Approved Actions Card -->
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">
+                    <i class="fas fa-check-circle me-2 text-success"></i>Approved Eco-Actions
+                </h5>
+                <span class="badge bg-success">{{ approved_actions|length }} Action{{ approved_actions|length|pluralize }}</span>
+            </div>
+            <div class="card-body">
+                {% if approved_actions %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="border-0">
+                                    <i class="fas fa-leaf me-1"></i>Action
+                                </th>
+                                <th class="border-0">
+                                    <i class="fas fa-tag me-1"></i>Category
+                                </th>
+                                <th class="border-0">
+                                    <i class="fas fa-coins me-1"></i>Points
+                                </th>
+                                <th class="border-0">
+                                    <i class="fas fa-calendar me-1"></i>Date
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for action in approved_actions %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-leaf text-success"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">{{ action.title }}</div>
+                                            <small class="text-muted">{{ action.description|truncatechars:50 }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ action.category }}</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-success">
+                                        <i class="fas fa-coins me-1"></i>{{ action.points }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div>{{ action.date_logged|date:"M d, Y" }}</div>
+                                    <small class="text-muted">{{ action.date_logged|date:"H:i" }}</small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-leaf fa-2x text-muted"></i>
+                    </div>
+                    <h6 class="text-muted mb-3">No approved actions yet</h6>
+                    <p class="text-muted mb-4">Start logging eco-actions to see them here!</p>
+                    <a href="/log-action/" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Log Your First Action
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-    <h4>Approved Eco-Actions</h4>
-    {% if approved_actions %}
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Points</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for action in approved_actions %}
-            <tr>
-                <td>{{ action.title }}</td>
-                <td>{{ action.category }}</td>
-                <td>{{ action.points }}</td>
-                <td>{{ action.date_logged|date:"Y-m-d H:i" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="text-center text-muted py-4">
-        No approved actions yet.
-    </div>
-    {% endif %}
 </div>
-{% endblock %} 
+{% endblock %}

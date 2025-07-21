@@ -1,26 +1,69 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Login</h2>
-    {% if form.errors %}
-    <div class="alert alert-danger">
-        <strong>Error:</strong> Invalid username or password. Please try again.
-    </div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="id_username">Username:</label>
-        <input type="text" name="username" id="id_username"><br>
-        <label for="id_password">Password:</label>
-        <input type="password" name="password" id="id_password"><br>
-        <button type="submit" class="btn btn-primary btn-block mt-3">Login</button>
-    </form>
-    <div class="mt-2">
-        <a href="/accounts/password_reset/">Forgot password?</a>
-    </div>
-    <div class="mt-2">
-        <a href="/">Back to Home</a>
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-6">
+        <div class="card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-sign-in-alt fa-2x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2">Welcome Back</h3>
+                    <p class="text-muted">Sign in to continue your eco-journey</p>
+                </div>
+
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Error:</strong> Invalid username or password. Please try again.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-medium">
+                            <i class="fas fa-user me-1 text-primary"></i>Username
+                        </label>
+                        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-medium">
+                            <i class="fas fa-lock me-1 text-primary"></i>Password
+                        </label>
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <div class="mb-3">
+                        <a href="/accounts/password_reset/" class="text-decoration-none">
+                            <i class="fas fa-key me-1"></i>Forgot your password?
+                        </a>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="text-muted mb-3">Don't have an account?</p>
+                    <a href="/accounts/register/" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="/" class="text-decoration-none text-muted">
+                <i class="fas fa-arrow-left me-1"></i>Back to Home
+            </a>
+        </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

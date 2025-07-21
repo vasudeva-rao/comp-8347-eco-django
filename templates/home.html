@@ -1,41 +1,133 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-    <h1>EcoChallenge</h1>
-    <p class="lead">Track, Earn, and Redeem for a Greener Planet</p>
-    <form method="get" action="/leaderboard/" class="row justify-content-center g-2 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="q" class="form-control" placeholder="Search eco-actions or users...">
-        </div>
-        <div class="col-md-3">
-            <select name="category" class="form-select">
-                <option value="">All Categories</option>
-                {% for cat in categories %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Search</button>
-        </div>
-    </form>
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4>How It Works</h4>
-                    <ol class="text-start">
-                        <li><strong>Log Eco-Actions:</strong> Submit your green activities and upload proof.</li>
-                        <li><strong>Admin Approval:</strong> Get your actions approved and earn points.</li>
-                        <li><strong>Redeem Rewards:</strong> Use your points to claim eco-friendly rewards.</li>
-                    </ol>
-                </div>
+<!-- Hero Section -->
+<div class="row align-items-center min-vh-50 mb-5">
+    <div class="col-lg-6">
+        <div class="pe-lg-4">
+            <h1 class="display-4 fw-bold text-gradient mb-3">
+                <span style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">EcoChallenge</span>
+            </h1>
+            <p class="lead text-muted mb-4">Track your green actions, earn points, and redeem rewards while building a sustainable future together.</p>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                {% if user.is_authenticated %}
+                    <a href="/log-action/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>Log Your Action
+                    </a>
+                    <a href="/profile/" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user me-2"></i>View Profile
+                    </a>
+                {% else %}
+                    <a href="/accounts/register/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="/accounts/login/" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                {% endif %}
             </div>
-            <a href="/log-action/" class="btn btn-success mx-2">Log Action</a>
-            <a href="/profile/" class="btn btn-primary mx-2">Profile</a>
-            <a href="/rewards/" class="btn btn-warning mx-2">Rewards</a>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="text-center">
+            <div class="position-relative">
+                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 300px; height: 300px;">
+                    <i class="fas fa-leaf" style="font-size: 8rem; color: var(--secondary-color);"></i>
+                </div>
+                <div class="position-absolute top-0 start-0 bg-primary bg-opacity-10 rounded-circle" style="width: 80px; height: 80px; animation: float 3s ease-in-out infinite;"></div>
+                <div class="position-absolute bottom-0 end-0 bg-warning bg-opacity-10 rounded-circle" style="width: 60px; height: 60px; animation: float 3s ease-in-out infinite reverse;"></div>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+
+<!-- Search Section -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8" style="width: 70% !important;">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">
+                    <i class="fas fa-search me-2 text-primary"></i>Explore Eco-Actions
+                </h5>
+                <form method="get" action="/leaderboard/" class="row g-3">
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <i class="fas fa-search position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light);"></i>
+                            <input type="text" name="q" class="form-control" placeholder="Search eco-actions or users..." style="padding-left: 45px;">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-1"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">How It Works</h2>
+            <p class="text-muted">Simple steps to start your eco-journey</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-plus-circle fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">1. Log Eco-Actions</h5>
+                        <p class="text-muted">Submit your green activities with proof and earn points for making a difference.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">2. Get Approved</h5>
+                        <p class="text-muted">Our admin team reviews your submissions and awards points for verified eco-actions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-gift fa-2x text-warning"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">3. Redeem Rewards</h5>
+                        <p class="text-muted">Use your earned points to claim eco-friendly rewards and continue your green journey.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.min-vh-50 {
+    min-height: 50vh;
+}
+</style>
+{% endblock %}
