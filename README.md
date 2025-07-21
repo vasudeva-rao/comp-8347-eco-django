@@ -5,18 +5,14 @@
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/vasudeva-rao/comp-8347-eco-django
-   cd EcoChallenge
+   cd comp-8347-eco-django
    ```
 
 2. **Create a virtual environment (recommended):**
    ```sh
    python -m venv .venv
-   # On Windows (PowerShell):
+   
    .venv\Scripts\Activate
-   # On Windows (cmd):
-   .venv\Scripts\activate.bat
-   # On Unix/Mac:
-   source .venv/bin/activate
    ```
 
 3. **Install dependencies:**
