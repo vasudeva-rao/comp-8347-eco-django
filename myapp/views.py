@@ -162,6 +162,7 @@ def register(request):
 
 def about(request):
     return render(request, 'about.html')
+
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -170,5 +171,6 @@ def contact(request):
         print(f"Contact form submitted:\nName: {name}\nEmail: {email}\nMessage: {message}")
         return render(request, 'contact.html', {'success': True})
     return render(request, 'contact.html')
+
 def team(request):
     return render(request, 'team.html')
